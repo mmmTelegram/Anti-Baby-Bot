@@ -76,7 +76,7 @@ def checkTime (userId):
         timeNow = datetime.datetime.now()
         if timeNow.hour == users[userId].messageHour and timeNow.minute == users[userId].messageMinute:
             alertMessage(userId, bot)
-            users[userId].messageHour, users[userId].message_minute = 17, 6
+            users[userId].messageHour, users[userId].message_minute = users[userId].hour, users[userId].minute
             time.sleep(60)
         
         # if the time is not correct, just wait
