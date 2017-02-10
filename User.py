@@ -7,8 +7,8 @@ import sys
 class User:
     
     ### Time to receive alerts everyday ###
-    hour = 2
-    minute = 6
+    hour = 8
+    minute = 0
 
 
     
