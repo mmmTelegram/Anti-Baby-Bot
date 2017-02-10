@@ -18,7 +18,33 @@ def getToken (file):
     with open (file, "r") as tokenFile:
         return tokenFile.read().replace('\n', '')
 
+
+
+### Change user time to receive alerts ###
+def changeTime (userId, choosenTime):
     
+    # check if time is valid and then change the alert time
+    try:
+        choosenTime = time.strptime(choosenTime, "%H:%M")
+
+        # everyday time
+        users[userId].hour = choosenTime.tm_hour
+        users[userId].minute = choosenTime.tm_min
+
+        # today time
+        users[userId].messageHour = users[userId].hour
+        users[userId].messageMinute = users[userId].minute        
+
+        # warn the user that he changed the time
+        text = "Alright, now the upcoming alerts I'll send you will be at %d:%d" % (users[userId].hour, users[userId].minute)
+        bot.sendMessage(userId, text)
+        
+    # if the time is not valid, warn the user
+    except ValueError:
+        text = "You didn't send me a valid time. Type /time and try it again"
+        bot.sendMessage(userId, text)
+
+
 
 ### Handle messages reiceved from users ###
 def chatMessage (message):
@@ -51,7 +77,7 @@ def chatMessage (message):
 
     # welcome the user
     if text == '/start':
-        text = "Hello! I'll help you to remember to take the contraceptive pills!"
+        text = "Hello! I'll help you to remember to take the contraceptive pills.\nTo change the time to receive alerts, type /time"
         bot.sendMessage(userId, text)
     
     # the user answered if he took the pills or not
@@ -59,9 +85,19 @@ def chatMessage (message):
         timeNow = datetime.datetime.now()
         rememberMessage(bot, text, userId, timeNow)
 
+    # the user asked to change the time to receive the alerts
+    elif text == '/time':
+        users[userId].timeFlag = 1
+        bot.sendMessage(userId, "By now, I send you alerts at %d:%d.\nTell me the time you want to receive the alerts, in the format HH:MM. For example, '00:12'" % (users[userId].hour, users[userId].minute) )
+
+    # change the message time (text is the time typed by user)
+    elif users[userId].timeFlag == 1:
+        changeTime(userId, text)
+        users[userId].timeFlag = 0
+
     # this bot don't like humans, so he will not answer anything else
     else:
-        text = "I don't speak humanoide."
+        text = "I don't speak humanoide"
         bot.sendMessage(userId, text)
 
 
@@ -105,7 +141,7 @@ def rememberMessage (bot, text, userId, timeNow):
 
     # the user did not took the pills, warn him in 30 minutes
     elif text == 'no':
-        bot.sendMessage(userId, "Hmmm... this is bad. I don't like babies! I'll remember you in 30 minutes")
+        bot.sendMessage(userId, "Hmmm... this is bad. I don't like babies. I'll remember you in 30 minutes")
         newTime = timeNow + datetime.timedelta(minutes=30)
         users[userId].message_hour, users[userId].message_minute = newTime.hour, newTime.minute
         users[userId].askFlag = 0

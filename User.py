@@ -6,9 +6,9 @@ import sys
 ### User Class ###
 class User:
     
-    ### Time to receive alerts ###
-    hour = 1
-    minute = 51
+    ### Time to receive alerts everyday ###
+    hour = 2
+    minute = 6
 
 
     
@@ -21,13 +21,17 @@ class User:
         # get user name
         self.userName = userName
         
-        # select the time to receive alert
+        # select the time to receive alert (can change if user forget to take the pills)
         self.messageHour = self.hour
         self.messageMinute = self.minute
         
         # This flag is up when the bot is asking for the user to answer 'yes' or 'no'
         # This flas is down after the user answer it
         self.askFlag = 0
+
+        # This flag is up when the bot is asking for the user to answer 'yes' or 'no'
+        # This flas is down after the user answer it
+        self.timeFlag = 0
 
 
 
