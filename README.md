@@ -6,4 +6,6 @@ Create a file on the main directory named "token" and then type your bot token i
 Also, enter the User class and change the hour and time to receive alerts
 
 # How to use the bot:
-Simple start a conversation with him
+Simple start a conversation with him <br />
+To change the time to receive alerts, type /time
+
