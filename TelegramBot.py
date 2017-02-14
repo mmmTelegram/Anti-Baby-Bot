@@ -43,7 +43,7 @@ def changeTime (userId, choosenTime):
         printTime = time.strftime("%H:%M", printTime)
 
         # warn the user that he changed the time
-        messageTouser = "Alright, now the upcoming alerts I'll send you will be at %s" %printTime
+        messageToUser = "Alright, now the upcoming alerts I'll send you will be at %s" %printTime
         bot.sendMessage(userId, messageToUser)
 
     # if the time is not valid, warn the user
