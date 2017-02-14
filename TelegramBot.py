@@ -176,7 +176,7 @@ def rememberMessage (bot, text, userId, timeNow):
 ###############
 
 ### get bot token ###
-token = getToken ("token")
+token = getToken ("token.id")
 
 # create bot with it's token
 bot = telepot.Bot(token)
