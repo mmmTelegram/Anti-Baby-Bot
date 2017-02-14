@@ -151,7 +151,7 @@ def rememberMessage (bot, text, userId, timeNow):
 
     # the user took the pills, congratz him
     if text == 'yes':
-        messageToUser = "No babies for you, congratulations!!!"
+        messageToUser = "No babies for you, congratulations! See you tomorrow."
         bot.sendMessage(userId, messageToUser)
         users[userId].askFlag = 0
 
