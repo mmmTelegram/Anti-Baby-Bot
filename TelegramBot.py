@@ -82,8 +82,19 @@ def chatMessage (message):
 
     # welcome the user
     if text == '/start':
-        messageToUser = "Hello! I'll help you to remember to take the contraceptive pills.\nTo change the time to receive alerts, type /time"
+        messageToUser = "Hello! I'll help you to remember to take the contraceptive pills."
+        messageToUser+= "\nTo change the time to receive alerts, type /time;"
+        messageToUser+= "\nTo stop me, type /stop."
         bot.sendMessage(userId, messageToUser)
+
+    # give some info about the bot
+    elif text == '/about':
+        messageToUser = "This bot is a free software under GPL v3 and comes without any warranty."
+        messageToUser+= "\nCheck the code in https://git.io/vDSYp"
+        messageToUser+= "\nFor more infomation, talk to the devs:"
+        messageToUser+= "\n@andrealmeid"
+        bot.sendMessage(userId, messageToUser)
+        del users[userId]
 
     # the user don't want to receive alerts anymore
     elif text == '/stop':
@@ -156,7 +167,7 @@ def alertMessage (userId, bot):
 
 ### Send the remember message after 30 minutes, if the user did not took the pills ###
 def rememberMessage (bot, text, userId, timeNow):
-    
+
     # the user took the pills, congratz him
     if text == 'yes':
         messageToUser = "No babies for you, congratulations!!!"
