@@ -72,12 +72,10 @@ def chatMessage (message):
     if userId == 0:
         return
 
-    # create an user object
-    newUser = User(userId, userName)
-
     # if the user is not already in the dictionary, put it there
     # and then spawn a thread to keep checking if the time to send alert has arrived
     if userId not in users:
+        newUser = User(userId, userName)
         users[userId] = newUser
         thread = Thread(target = checkTime, args = (userId,))
         thread.start()
@@ -86,6 +84,12 @@ def chatMessage (message):
     if text == '/start':
         messageToUser = "Hello! I'll help you to remember to take the contraceptive pills.\nTo change the time to receive alerts, type /time"
         bot.sendMessage(userId, messageToUser)
+
+    # the user don't want to receive alerts anymore
+    elif text == '/stop':
+        messageToUser = "Bye bye"
+        bot.sendMessage(userId, messageToUser)
+        del users[userId]
 
     # the user answered if he took the pills or not
     elif users[userId].askFlag == 1:
@@ -109,12 +113,6 @@ def chatMessage (message):
     elif users[userId].timeFlag == 1:
         changeTime(userId, text)
         users[userId].timeFlag = 0
-
-    # remove user from dictionary
-    elif text == '/stop':
-        messageToUser = "Bye bye"
-        bot.sendMessage(userId, messageToUser)
-        users[userId] = None
 
     # this bot don't like humans, so he won't answer anything else
     else:
@@ -158,7 +156,7 @@ def alertMessage (userId, bot):
 
 ### Send the remember message after 30 minutes, if the user did not took the pills ###
 def rememberMessage (bot, text, userId, timeNow):
-
+    
     # the user took the pills, congratz him
     if text == 'yes':
         messageToUser = "No babies for you, congratulations!!!"
