@@ -110,6 +110,12 @@ def chatMessage (message):
         changeTime(userId, text)
         users[userId].timeFlag = 0
 
+    # remove user from dictionary
+    elif text == '/stop':
+        messageToUser = "Bye bye"
+        bot.sendMessage(userId, messageToUser)
+        users[userId] = None
+
     # this bot don't like humans, so he won't answer anything else
     else:
         messageToUser = "I don't speak humanoide"
@@ -122,6 +128,10 @@ def checkTime (userId):
 
     # keep the thread running
     while True:
+
+        # check if this user still in dictionary, if dont, stop thread
+        if users[userId] == None:
+            return
 
         # send the contraceptive alert, if the time is correct
         timeNow = datetime.datetime.now()
