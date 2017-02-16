@@ -7,4 +7,5 @@ Also, enter the User class and change the hour and time to receive alerts
 
 # How to use the bot:
 Simple start a conversation with him <br />
-To change the time to receive alerts, type /time
+To change the time to receive alerts, type /time <br />
+To stop receiving alerts, type /stop
