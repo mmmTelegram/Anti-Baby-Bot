@@ -51,6 +51,19 @@ def changeTime (userId, choosenTime):
         messageToUser = "You didn't send me a valid time. Type /time and try it again"
         bot.sendMessage(userId, messageToUser)
 
+### database functions
+
+# find a user by userId in database
+def findUser(id):
+    return
+
+# delete a user from database by userId
+def deleteUser(id):
+    return
+
+# modify time info about some user in database by userId
+def modifyTimeUser(id, hour, minute):
+    return
 
 # insert user in database.id using json
 def insertUser(id, name, hour, minute):
