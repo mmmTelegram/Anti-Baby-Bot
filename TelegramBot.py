@@ -5,6 +5,7 @@ import time
 import telepot
 import datetime
 import json
+import os
 from User import User
 from threading import Thread
 
@@ -60,6 +61,10 @@ def insertUser(id, name, hour, minute):
 
 # load users from database.id and add them to users dictionary
 def loadUsers():
+    # creates database.id if it doesnt exists yet
+    if not(os.path.isfile("database.id")):
+        open("database.id", "w").close()
+
     with open("database.id", "r") as database:
         for user in database:
             u = json.loads(user)
@@ -110,7 +115,7 @@ def chatMessage (message):
         messageToUser = "This bot is a free software under GPL v3 and comes without any warranty."
         messageToUser+= "\nCheck the code in https://git.io/vDSYp"
         messageToUser+= "\nFor more infomation, talk to the devs:"
-        messageToUser+= "\n@andrealmeid"
+        messageToUser+= "\n@andrealmeid or @leandrohrb"
         bot.sendMessage(userId, messageToUser)
         del users[userId]
 
