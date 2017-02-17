@@ -51,6 +51,7 @@ def changeTime (userId, choosenTime):
         messageToUser = "You didn't send me a valid time. Type /time and try it again"
         bot.sendMessage(userId, messageToUser)
 
+
 # insert user in database.id using json
 def insertUser(id, name, hour, minute):
     user_struct = {'id' : id, 'name': name, 'hour' :  hour, 'minute' :  minute }
@@ -58,6 +59,7 @@ def insertUser(id, name, hour, minute):
     database = open("database.id", "a")
     database.write(user_json + "\n")
     database.close()
+
 
 # load users from database.id and add them to users dictionary
 def loadUsers():
@@ -80,9 +82,10 @@ def chatMessage (message):
     # get the user id
     userId = message['chat']['id']
 
+    # I GUESS THIS IS UNNECESSARY CODE
     # if nobody sent a message, leave
-    if userId == 0:
-        return
+    #if userId == 0:
+    #   return
 
     # get the user name
     userName = message['chat']['first_name']
@@ -93,45 +96,47 @@ def chatMessage (message):
     # get the time now
     timeNow = datetime.datetime.now()
 
-
-    # if the user is not already in the dictionary, put it there
-    # and then spawn a thread to keep checking if the time to send alert has arrived
-    if userId not in users:
-        newUser = User(userId, userName, 8, 0)
-        users[userId] = newUser
-        thread = Thread(target = checkTime, args = (userId,))
-        thread.start()
-        insertUser(userId, userName, users[userId].messageHour, users[userId].messageMinute)
-
-    # welcome the user
+    # start the user
     if text == '/start':
+
+        # welcome him and explain how the bot works
         messageToUser = "Hello! I'll help you to remember to take the contraceptive pills."
         messageToUser+= "\nTo change the time to receive alerts, type /time;"
         messageToUser+= "\nTo stop me, type /stop."
         bot.sendMessage(userId, messageToUser)
+
+        # if the user is not already in the dictionary, put it there
+        # and then spawn a thread to keep checking if the time to send alert has arrived
+        if userId not in users:
+            newUser = User(userId, userName, 8, 0)
+            users[userId] = newUser
+            thread = Thread(target = checkTime, args = (userId,))
+            thread.start()
+            insertUser(userId, userName, users[userId].messageHour, users[userId].messageMinute)
 
     # give some info about the bot
     elif text == '/about':
         messageToUser = "This bot is a free software under GPL v3 and comes without any warranty."
         messageToUser+= "\nCheck the code in https://git.io/vDSYp"
         messageToUser+= "\nFor more infomation, talk to the devs:"
-        messageToUser+= "\n@andrealmeid or @leandrohrb"
+        messageToUser+= "\n@andrealmeid"
+        messageToUser+= "\n@leandrohrb"
         bot.sendMessage(userId, messageToUser)
-        del users[userId]
 
     # the user don't want to receive alerts anymore
-    elif text == '/stop':
-        messageToUser = "Bye bye"
+    elif userId in users and text == '/stop':
+        messageToUser = "If you ever want to receive alerts from me again, type /start"
+        messageToUser+= "\nBye bye!"
         bot.sendMessage(userId, messageToUser)
         del users[userId]
 
     # the user answered if he took the pills or not
-    elif users[userId].askFlag == 1:
+    elif userId in users and users[userId].askFlag == 1:
         timeNow = datetime.datetime.now()
         rememberMessage(bot, text, userId, timeNow)
 
     # the user asked to change the time to receive the alerts
-    elif text == '/time':
+    elif userId in users and text == '/time':
         users[userId].timeFlag = 1
 
         # convert time to string, to print current time of alert receiving
@@ -140,16 +145,17 @@ def chatMessage (message):
         printTime = time.strftime("%H:%M", printTime)
 
         # send the message
-        messageToUser = "By now, I send you alerts at %s.\nTell me the time you want to receive the alerts, in the format HH:MM. For example, '09:30'" %printTime
+        messageToUser = "By now, I send you alerts at %s." %printTime
+        messageToUser+= "\nTell me the time you want to receive the alerts, in the format HH:MM. For example, '09:30'"
         bot.sendMessage(userId, messageToUser)
 
     # change the message time (text is the time typed by user, in string format)
-    elif users[userId].timeFlag == 1:
+    elif userId in users and users[userId].timeFlag == 1:
         changeTime(userId, text)
         users[userId].timeFlag = 0
 
     # this bot don't like humans, so he won't answer anything else
-    else:
+    elif userId in users:
         messageToUser = "I don't speak humanoide"
         bot.sendMessage(userId, messageToUser)
 
@@ -162,7 +168,7 @@ def checkTime (userId):
     while True:
 
         # check if this user still in dictionary, if dont, stop thread
-        if users[userId] == None:
+        if userId not in users:
             return
 
         # send the contraceptive alert, if the time is correct
@@ -201,7 +207,7 @@ def rememberMessage (bot, text, userId, timeNow):
     elif text == 'no':
         messageToUser = "Hmmm... this is bad. I don't like babies. I'll remember you in 30 minutes"
         bot.sendMessage(userId, messageToUser)
-        newTime = timeNow + datetime.timedelta(minutes=30)
+        newTime = timeNow + datetime.timedelta(minutes=1)
         users[userId].message_hour, users[userId].message_minute = newTime.hour, newTime.minute
         users[userId].askFlag = 0
 
