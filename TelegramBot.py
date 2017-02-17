@@ -1,23 +1,22 @@
+#!/usr/bin/python
 ### Import libraries ###
 import sys
 import time
 import telepot
 import datetime
+import json
 from User import User
 from threading import Thread
-
 
 
 ### Create users dictionary ###
 users = {}
 
 
-
 ### Get bot token ###
 def getToken (file):
     with open (file, "r") as tokenFile:
         return tokenFile.read().replace('\n', '')
-
 
 
 ### Change user time to receive alerts ###
@@ -51,16 +50,37 @@ def changeTime (userId, choosenTime):
         messageToUser = "You didn't send me a valid time. Type /time and try it again"
         bot.sendMessage(userId, messageToUser)
 
+# insert user in database.id using json
+def insertUser(id, name, hour, minute):
+    user_struct = {'id' : id, 'name': name, 'hour' :  hour, 'minute' :  minute }
+    user_json = json.dumps(user_struct)
+    database = open("database.id", "a")
+    database.write(user_json + "\n")
+    database.close()
+
+# load users from database.id and add them to users dictionary
+def loadUsers():
+    with open("database.id", "r") as database:
+        for user in database:
+            u = json.loads(user)
+            newUser = User(u['id'], u['name'], u['hour'], u['minute'])
+            users[u['id']] = newUser
+            thread = Thread(target = checkTime, args = (u['id'],))
+            thread.start()
 
 
 ### Handle messages reiceved from users ###
 def chatMessage (message):
 
-    # get the user name
-    userName = message['chat']['first_name']
-
     # get the user id
     userId = message['chat']['id']
+
+    # if nobody sent a message, leave
+    if userId == 0:
+        return
+
+    # get the user name
+    userName = message['chat']['first_name']
 
     # get the text
     text = message['text']
@@ -68,17 +88,15 @@ def chatMessage (message):
     # get the time now
     timeNow = datetime.datetime.now()
 
-    # if nobody sent a message, leave
-    if userId == 0:
-        return
 
     # if the user is not already in the dictionary, put it there
     # and then spawn a thread to keep checking if the time to send alert has arrived
     if userId not in users:
-        newUser = User(userId, userName)
+        newUser = User(userId, userName, 8, 0)
         users[userId] = newUser
         thread = Thread(target = checkTime, args = (userId,))
         thread.start()
+        insertUser(userId, userName, users[userId].messageHour, users[userId].messageMinute)
 
     # welcome the user
     if text == '/start':
@@ -199,6 +217,9 @@ token = getToken ("token.id")
 
 # create bot with it's token
 bot = telepot.Bot(token)
+
+# load users from database
+loadUsers()
 
 # get inputs from users and handle them
 bot.message_loop(chatMessage)

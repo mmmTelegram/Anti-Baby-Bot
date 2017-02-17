@@ -2,7 +2,6 @@
 import sys
 
 
-
 ### User Class ###
 class User:
 
@@ -10,10 +9,8 @@ class User:
     hour = 8
     minute = 0
 
-
-
     ### Init method (constructor)
-    def __init__ (self, userId, userName):
+    def __init__ (self, userId, userName, userHour, userMinute):
 
         # get user id
         self.userId = userId
@@ -22,8 +19,8 @@ class User:
         self.userName = userName
 
         # select the time to receive alert (can change if user forget to take the pills)
-        self.messageHour = self.hour
-        self.messageMinute = self.minute
+        self.messageHour = userHour
+        self.messageMinute = userMinute
 
         # This flag is up when the bot is asking for the user to answer 'yes' or 'no'
         # This flas is down after the user answer it
