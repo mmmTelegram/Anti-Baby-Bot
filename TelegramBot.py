@@ -237,4 +237,4 @@ bot.message_loop(chatMessage)
 
 # keep the bot running
 while True:
-    pass
+    time.sleep(60)
