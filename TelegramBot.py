@@ -52,7 +52,7 @@ def changeTime (userId, choosenTime):
         bot.sendMessage(userId, messageToUser)
 
 
-# insert user in database.id using json
+### Insert user in database.id using json ###
 def insertUser(id, name, hour, minute):
     user_struct = {'id' : id, 'name': name, 'hour' :  hour, 'minute' :  minute }
     user_json = json.dumps(user_struct)
@@ -61,7 +61,7 @@ def insertUser(id, name, hour, minute):
     database.close()
 
 
-# load users from database.id and add them to users dictionary
+### Load users from database.id and add them to users dictionary ###
 def loadUsers():
     # creates database.id if it doesnt exists yet
     if not(os.path.isfile("database.id")):
@@ -160,7 +160,6 @@ def chatMessage (message):
         bot.sendMessage(userId, messageToUser)
 
 
-
 ### Check the time to send the alert message (it's a thread target) ###
 def checkTime (userId):
 
@@ -183,7 +182,6 @@ def checkTime (userId):
             time.sleep(20)
 
 
-
 ### Send the alert message for the user ###
 def alertMessage (userId, bot):
 
@@ -191,7 +189,6 @@ def alertMessage (userId, bot):
     messageToUser = "Did you took the pills? Please answer 'yes' or 'no'"
     bot.sendMessage(userId, messageToUser)
     users[userId].askFlag = 1
-
 
 
 ### Send the remember message after 30 minutes, if the user did not took the pills ###
