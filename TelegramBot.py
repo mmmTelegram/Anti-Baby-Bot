@@ -45,12 +45,32 @@ def changeTime (userId, choosenTime):
         # warn the user that he changed the time
         messageToUser = "Alright, now the upcoming alerts I'll send you will be at %s" %printTime
         bot.sendMessage(userId, messageToUser)
+        modifyTimeUser(userId, choosenTime.tm_hour, choosenTime.tm_min)
 
     # if the time is not valid, warn the user
     except ValueError:
         messageToUser = "You didn't send me a valid time. Type /time and try it again"
         bot.sendMessage(userId, messageToUser)
 
+### database functions
+
+# delete a user from database by userId
+def deleteUser(id):
+    del users[id]
+    database = open("database.id", "w")
+    for user in users:
+        insertUser(users[user].userId, users[user].userName, users[user].messageHour, users[user].messageMinute)
+    loadUsers()
+    return
+
+# modify time info about some user in database by userId
+def modifyTimeUser(id, hour, minute):
+    users[id].messageHour = hour
+    users[id].messageMinute = minute
+    database = open("database.id", "w")
+    for user in users:
+        insertUser(users[user].userId, users[user].userName, users[user].messageHour, users[user].messageMinute)
+    loadUsers()
 
 ### Insert user in database.id using json ###
 def insertUser(id, name, hour, minute):
@@ -139,7 +159,7 @@ def chatMessage (message):
         messageToUser = "If you ever want to receive alerts from me again, type /start"
         messageToUser+= "\nBye bye!"
         bot.sendMessage(userId, messageToUser)
-        del users[userId]
+        deleteUser(userId)
 
     # the user answered if he took the pills or not
     elif userId in users and users[userId].askFlag == 1:
