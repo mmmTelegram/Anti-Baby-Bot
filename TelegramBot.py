@@ -112,7 +112,18 @@ def chatMessage (message):
             users[userId] = newUser
             thread = Thread(target = checkTime, args = (userId,))
             thread.start()
-            insertUser(userId, userName, users[userId].messageHour, users[userId].messageMinute)
+
+            # check if the user is already in the database
+            # if he's not, put it in
+            userAlreadyOnDatabase = False
+            with open("database.id", "r") as database:
+                for user in database:
+                    u = json.loads(user)
+                    if u['id'] == userId:
+                        userAlreadyOnDatabase = True                
+                if not userAlreadyOnDatabase:
+                    insertUser(userId, userName, users[userId].messageHour, users[userId].messageMinute)
+
 
     # give some info about the bot
     elif text == '/about':
