@@ -8,6 +8,9 @@ import json
 import os
 from User import User
 from threading import Thread
+import time
+import pytz
+
 
 
 ### Create users dictionary ###
@@ -113,9 +116,10 @@ def chatMessage (message):
     # get the text
     text = message['text']
 
-    # get the time now
-    timeNow = datetime.datetime.now()
-
+    # get the time now (on SP)
+    timeZone = pytz.timezone('Brazil/East')
+    timeNow = datetime.datetime.now(timeZone)
+    
     # start the user
     if text == '/start':
 
@@ -202,7 +206,8 @@ def checkTime (userId):
             return
 
         # send the contraceptive alert, if the time is correct
-        timeNow = datetime.datetime.now()
+        timeZone = pytz.timezone('Brazil/East')
+        timeNow = datetime.datetime.now(timeZone)
         if timeNow.hour == users[userId].messageHour and timeNow.minute == users[userId].messageMinute:
             alertMessage(userId, bot)
             users[userId].messageHour, users[userId].message_minute = users[userId].hour, users[userId].minute
