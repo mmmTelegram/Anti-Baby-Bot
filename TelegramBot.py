@@ -140,7 +140,7 @@ def chatMessage (message):
                 for user in database:
                     u = json.loads(user)
                     if u['id'] == userId:
-                        userAlreadyOnDatabase = True                
+                        userAlreadyOnDatabase = True
                 if not userAlreadyOnDatabase:
                     insertUser(userId, userName, users[userId].messageHour, users[userId].messageMinute)
 
@@ -171,7 +171,7 @@ def chatMessage (message):
         users[userId].timeFlag = 1
 
         # convert time to string, to print current time of alert receiving
-        printTime = users[userId].hour*3600 + users[userId].minute*60
+        printTime = users[userId].messageHour*3600 + users[userId].messageMinute*60
         printTime = time.gmtime(printTime)
         printTime = time.strftime("%H:%M", printTime)
 
