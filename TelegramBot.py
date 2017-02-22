@@ -73,7 +73,9 @@ def modifyTimeUser(id, hour, minute):
     database = open("database.id", "w")
     for user in users:
         insertUser(users[user].userId, users[user].userName, users[user].messageHour, users[user].messageMinute)
-    loadUsers()
+    #PROBLEM HERE, i dont think it should load the users again
+    #working fine without this
+    #loadUsers()
 
 ### Insert user in database.id using json ###
 def insertUser(id, name, hour, minute):
@@ -167,7 +169,8 @@ def chatMessage (message):
 
     # the user answered if he took the pills or not
     elif userId in users and users[userId].askFlag == 1:
-        timeNow = datetime.datetime.now()
+        timeZone = pytz.timezone('Brazil/East')
+        timeNow = datetime.datetime.now(timeZone)
         rememberMessage(bot, text, userId, timeNow)
 
     # the user asked to change the time to receive the alerts
@@ -175,7 +178,7 @@ def chatMessage (message):
         users[userId].timeFlag = 1
 
         # convert time to string, to print current time of alert receiving
-        printTime = users[userId].messageHour*3600 + users[userId].messageMinute*60
+        printTime = users[userId].hour*3600 + users[userId].minute*60
         printTime = time.gmtime(printTime)
         printTime = time.strftime("%H:%M", printTime)
 
@@ -210,7 +213,7 @@ def checkTime (userId):
         timeNow = datetime.datetime.now(timeZone)
         if timeNow.hour == users[userId].messageHour and timeNow.minute == users[userId].messageMinute:
             alertMessage(userId, bot)
-            users[userId].messageHour, users[userId].message_minute = users[userId].hour, users[userId].minute
+            users[userId].messageHour, users[userId].messageMinute = users[userId].hour, users[userId].minute
             time.sleep(60)
 
         # if the time is not correct, just wait
@@ -240,8 +243,8 @@ def rememberMessage (bot, text, userId, timeNow):
     elif text == 'no':
         messageToUser = "Hmmm... this is bad. I don't like babies. I'll remember you in 30 minutes"
         bot.sendMessage(userId, messageToUser)
-        newTime = timeNow + datetime.timedelta(minutes=1)
-        users[userId].message_hour, users[userId].message_minute = newTime.hour, newTime.minute
+        newTime = timeNow + datetime.timedelta(minutes=30)
+        users[userId].messageHour, users[userId].messageMinute = newTime.hour, newTime.minute
         users[userId].askFlag = 0
 
     # if the user answered anything else than 'yes' or 'no', make him answer
