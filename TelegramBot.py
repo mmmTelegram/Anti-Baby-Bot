@@ -73,9 +73,6 @@ def modifyTimeUser(id, hour, minute):
     database = open("database.id", "w")
     for user in users:
         insertUser(users[user].userId, users[user].userName, users[user].messageHour, users[user].messageMinute)
-    #PROBLEM HERE, i dont think it should load the users again
-    #working fine without this
-    #loadUsers()
 
 ### Insert user in database.id using json ###
 def insertUser(id, name, hour, minute):
@@ -106,11 +103,6 @@ def chatMessage (message):
 
     # get the user id
     userId = message['chat']['id']
-
-    # I GUESS THIS IS UNNECESSARY CODE
-    # if nobody sent a message, leave
-    #if userId == 0:
-    #   return
 
     # get the user name
     userName = message['chat']['first_name']
@@ -225,7 +217,7 @@ def checkTime (userId):
 def alertMessage (userId, bot):
 
     # send the message
-    messageToUser = "Did you took the pills? Please answer 'yes' or 'no'"
+    messageToUser = "Did you took the pills? Please answer, 'Yes' or 'No'"
     bot.sendMessage(userId, messageToUser)
     users[userId].askFlag = 1
 
@@ -234,13 +226,13 @@ def alertMessage (userId, bot):
 def rememberMessage (bot, text, userId, timeNow):
 
     # the user took the pills, congratz him
-    if text == 'yes':
+    if text == 'yes' or text == 'Yes':
         messageToUser = "No babies for you, congratulations!!!"
         bot.sendMessage(userId, messageToUser)
         users[userId].askFlag = 0
 
     # the user did not took the pills, warn him in 30 minutes
-    elif text == 'no':
+    elif text == 'no' or text == 'No':
         messageToUser = "Hmmm... this is bad. I don't like babies. I'll remember you in 30 minutes"
         bot.sendMessage(userId, messageToUser)
         newTime = timeNow + datetime.timedelta(minutes=30)
@@ -249,7 +241,7 @@ def rememberMessage (bot, text, userId, timeNow):
 
     # if the user answered anything else than 'yes' or 'no', make him answer
     else:
-        messageToUser = "Please answer, 'yes' or 'no'?"
+        messageToUser = "Please answer, 'Yes' or 'No'?"
         bot.sendMessage(userId, messageToUser)
         users[userId].askFlag = 1
 

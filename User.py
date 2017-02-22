@@ -5,10 +5,6 @@ import sys
 ### User Class ###
 class User:
 
-    ### Time to receive alerts everyday ###
-    hour = 8
-    minute = 0
-
     ### Init method (constructor)
     def __init__ (self, userId, userName, userHour, userMinute):
 
@@ -17,8 +13,12 @@ class User:
 
         # get user name
         self.userName = userName
+        
+        # time to receive alerts everyday
+        self.hour = userHour
+        self.minute = userMinute
 
-        # select the time to receive alert (can change if user forget to take the pills)
+        # select the time to receive alert today (can change if user forget to take the pills)
         self.messageHour = userHour
         self.messageMinute = userMinute
 
