@@ -217,7 +217,7 @@ def checkTime (userId):
 def alertMessage (userId, bot):
 
     # send the message
-    messageToUser = "Did you took the pills? Please answer, 'Yes' or 'No'"
+    messageToUser = "Did you take the pills? Please answer, 'Yes' or 'No'"
     bot.sendMessage(userId, messageToUser)
     users[userId].askFlag = 1
 
