@@ -63,7 +63,8 @@ def deleteUser(id):
     database = open("database.id", "w")
     for user in users:
         insertUser(users[user].userId, users[user].userName, users[user].messageHour, users[user].messageMinute)
-    loadUsers()
+    # TALVEZ ESTEJA ERRADO
+    #loadUsers()
     return
 
 # modify time info about some user in database by userId
